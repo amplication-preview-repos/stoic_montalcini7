@@ -1,0 +1,59 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Instructor {
+  courses      Course[]
+  createdAt    DateTime      @default(now())
+  email        String?
+  id           String        @id @default(cuid())
+  liveSessions LiveSession[]
+  name         String?
+  updatedAt    DateTime      @updatedAt
+}
+
+model Course {
+  createdAt    DateTime    @default(now())
+  description  String?
+  id           String      @id @default(cuid())
+  instructor   Instructor? @relation(fields: [instructorId], references: [id])
+  instructorId String?
+  lessons      Lesson[]
+  price        Float?
+  title        String?
+  updatedAt    DateTime    @updatedAt
+}
+
+model Lesson {
+  content   String?
+  course    Course?  @relation(fields: [courseId], references: [id])
+  courseId  String?
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  title     String?
+  updatedAt DateTime @updatedAt
+}
+
+model LiveSession {
+  createdAt     DateTime    @default(now())
+  id            String      @id @default(cuid())
+  instructor    Instructor? @relation(fields: [instructorId], references: [id])
+  instructorId  String?
+  scheduledTime DateTime?
+  title         String?
+  updatedAt     DateTime    @updatedAt
+  zoomLink      String?
+}
+
+model Student {
+  createdAt DateTime @default(now())
+  email     String?
+  id        String   @id @default(cuid())
+  name      String?
+  updatedAt DateTime @updatedAt
+}
